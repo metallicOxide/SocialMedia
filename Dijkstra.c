@@ -8,7 +8,7 @@
 #define INF -1
 static ItemPQ newItem(int key, int value);
 static PredNode *makeNode(int v);
-// static void freeList (PredNode *target);
+static void freeList (PredNode *target);
 
 ShortestPaths dijkstra(Graph g, Vertex v) {
 	ShortestPaths paths;
@@ -58,6 +58,7 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
 				} else {
 					// printf("updating predecessors from %d to %d\n", paths.pred[out->w]->v, popEdge.key);
 					// printf("distance from src to 11 is: %d\n", paths.dist[11]);
+					freeList(paths.pred[out->w]);
 					paths.pred[out->w] = makeNode(popEdge.key);
 				}
 				ItemPQ temp;
@@ -83,6 +84,7 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
 			out = out->next;
 		}
 	}
+	// set the distance of inifinite to 0 at end of Dijkstras
 	for (int i = 0; i < paths.noNodes; i++) {
 		if (paths.pred[i] == NULL && paths.dist[i] == INF) {
 			paths.dist[i] = 0;
@@ -99,14 +101,15 @@ static PredNode *makeNode(int v) {
 	return new;
 }
 
-// static void freeList (PredNode *target) {
-// 	PredNode *curr = target;
-// 	PredNode *temp = curr;
-// 	while(curr != NULL) {
-// 		curr = curr->next;
-// 		free(temp);
-// 	}
-// }
+static void freeList (PredNode *target) {
+	PredNode *curr = target;
+	PredNode *temp = curr;
+	while(curr != NULL) {
+		curr = curr->next;
+		free(temp);
+		temp = curr;
+	}
+}
 ItemPQ newItem(int key, int value) {
 	ItemPQ item;
 	item.key = key;
@@ -119,5 +122,6 @@ void showShortestPaths(ShortestPaths paths) {
 
 
 void  freeShortestPaths(ShortestPaths paths) {
-
+	free(paths.dist);
+	for (int i = 0; i < paths.noNodes; i++) freeList(paths.pred[i]);
 }

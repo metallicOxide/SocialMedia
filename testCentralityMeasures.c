@@ -43,7 +43,6 @@ int main(int argc, char* argv[]){
 		return EXIT_FAILURE;
 	}
 	Graph g = readGraph(argv[1]);
-	printf("HASN'T BEEN IMPLEMENTED\n");
 	if (argv[2][0] == 'd' && argv[2][1] == '\0') {
   	NodeValues val = degreeCentrality(g);
   	showNodeValues(val);
