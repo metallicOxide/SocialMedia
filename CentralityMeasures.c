@@ -5,13 +5,17 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+// struct to store information for closeness
 typedef struct _closenessInfo{
-	int n;
+	double n;
 	double sum;
 }closenessInfo;
 
 static int countNodes (AdjList target);
-static closenessInfo getInfo (Graph g, int target);
+static closenessInfo getClosenessInfo (Graph g, int target);
+static NodeValues getBetweenInfo (ShortestPaths *path, NodeValues nodes);
+static double inList (PredNode *list, int target);
+static int listSize (PredNode *list);
 
 static int countNodes (AdjList target) {
 	AdjList curr = target;
@@ -55,10 +59,9 @@ NodeValues closenessCentrality(Graph g){
 	closeness.noNodes = numVerticies(g);
 	closeness.values = calloc(closeness.noNodes, sizeof(double));
 	for (int i = 0; i < closeness.noNodes; i++) {
-		closenessInfo info = getInfo(g, i);
-		double top = (info.n-1)*(info.n-1);
-		double bot = (closeness.noNodes - 1);
-		double factor = top/bot;
+		closenessInfo info = getClosenessInfo(g, i);
+		// factors to consider, would weights ever be decimal?
+		double factor = (info.n-1)*(info.n-1)/(closeness.noNodes-1);
 		factor = factor/info.sum;
 		closeness.values[i] = factor;
 	}
@@ -66,8 +69,18 @@ NodeValues closenessCentrality(Graph g){
 }
 
 NodeValues betweennessCentrality(Graph g){
-	NodeValues throwAway = {0};
-	return throwAway;
+	NodeValues between;
+	between.noNodes = numVerticies(g);
+	between.values = calloc(between.noNodes, sizeof(double));
+	ShortestPaths *path = malloc(numVerticies(g) * sizeof(struct ShortestPaths));
+	double total , num , dem;
+	total = num = dem = 0;
+	for (int i = 0; i < between.noNodes; i++) path[i] = dijkstra(g, i);
+	
+
+	return between;
+	// NodeValues throwAway = {0};
+	// return throwAway;
 }
 
 NodeValues betweennessCentralityNormalised(Graph g){
@@ -85,10 +98,10 @@ void freeNodeValues(NodeValues values){
 	free(values.values);
 }
 
-static closenessInfo getInfo (Graph g, int target) {
+static closenessInfo getClosenessInfo (Graph g, int target) {
 	ShortestPaths path = dijkstra(g, target);
 	closenessInfo info;
-	double sum = 0;
+	int sum = 0;
 	// connection to itself
 	int n = 1;
 	for (int i = 0; i < path.noNodes; i++) {
@@ -101,4 +114,59 @@ static closenessInfo getInfo (Graph g, int target) {
 	freeShortestPaths(path);
 	// printf("sum: %lf\n", sum);
 	return info;
+}
+
+static NodeValues getBetweenInfo (ShortestPaths *path) {
+	NodeValues nodes;
+	nodes.noNodes = path->noNodes;
+	nodes.values = malloc(sizeof(double) * nodes.noNodes);
+	for (int i = 0; i < nodes.noNodes; i++) {
+		ShortestPaths currPath = path[i];
+
+	}
+	return nodes;
+}
+
+static NodeValues 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+static double inList (PredNode *list, int target) {
+	// printf("is it in list?\n");
+	PredNode *curr = list;
+	while (curr != NULL) {
+		if (curr->v == target) return 1;
+		curr = curr->next;
+	}
+	return 0;
+}
+
+static int listSize (PredNode *list) {
+	// printf("calculating list size\n");
+	int size = 0;
+	PredNode *curr = list;
+	while (curr != NULL) {
+		size++;
+		curr = curr->next;
+	}
+	return size;
 }

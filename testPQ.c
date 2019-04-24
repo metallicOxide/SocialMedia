@@ -41,13 +41,48 @@ int main(){
   addPQ(pq,newItemPQ(4,8));
   printf("addPQ: {3,10}\n");  
   addPQ(pq,newItemPQ(3,10));
-  
-  printf("Update {4,8} to {4,11}\n");
-  updatePQ(pq, newItemPQ(4,11)) ;
-
   showPQ(pq);
   
-  for(int i=0; i<3; i++){  
+  printf("Update {4,8} to {4,11}\n");
+  updatePQ(pq, newItemPQ(4,11));
+  showPQ(pq);
+
+  printf("addPQ: {3,12}\n"); 
+  addPQ(pq,newItemPQ(3,12));
+  printf("state after adding {3,12}\n");
+  showPQ(pq);
+
+  printf("addPQ: {3,10}\n"); 
+  addPQ(pq, newItemPQ(3,10));
+
+  printf("state after adding {3,10}\n");
+  showPQ(pq);
+
+  printf("addPQ: {5,11}\n"); 
+  addPQ(pq, newItemPQ(5,11));
+
+  printf("state after adding {5,11}\n");
+  showPQ(pq);
+
+  printf("addPQ: {7,12}\n"); 
+  addPQ(pq, newItemPQ(7,12));
+
+  printf("state after adding {7,12}\n");
+  showPQ(pq);
+
+  printf("addPQ: {2,1}\n"); 
+  addPQ(pq, newItemPQ(2,1));
+
+  printf("state after adding {2,1}\n");
+  showPQ(pq);
+
+  printf("addPQ: {4,2}\n"); 
+  addPQ(pq, newItemPQ(4,2));
+
+  printf("state after adding {4,2}\n");
+  showPQ(pq);
+
+  for(int i=0; i<6; i++){  
       v = dequeuePQ(pq);
       printf("Dequeued: {%d,%d}\n",v.key,v.value);
   }  

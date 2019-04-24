@@ -111,8 +111,7 @@ void removeEdge(Graph g, Vertex src, Vertex dest) {
 
 bool adjacent(Graph g, Vertex src, Vertex dest) {
     assert(g != NULL && src >= 0 && dest >= 0);
-    AdjList start = g->nodesOut[src];
-    AdjList curr = start;
+    AdjList curr = g->nodesOut[src];
     // see if it's in the list or nah
     while (curr != NULL) {
         if (curr->w == dest) return true;

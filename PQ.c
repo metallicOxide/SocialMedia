@@ -48,6 +48,17 @@ void addPQ(PQ pq, ItemPQ element) {
 	DListNode new = newNode(element);
 	int value = element.value;
 
+	DListNode curr = pq->head;
+	DListNode temp;
+	// matching key, flush element value
+	while (curr != NULL) {
+		if (curr->item.key == element.key) {
+			updatePQ(pq, element);
+			return;
+		}
+		curr = curr->next;
+	}
+
 	// if list is empty
 	if (PQEmpty(pq)) {
 		pq->head = new;
@@ -75,19 +86,12 @@ void addPQ(PQ pq, ItemPQ element) {
 		// printf("larger than end\n");
 		return;
 	}
-
+	curr = pq->head;
 	// cases where the head does not have lower priority
-	DListNode curr = pq->head;
-	DListNode temp;
 	while(curr != NULL) {
-		// matching key, flush element value
-		if (curr->item.key == element.key) {
-			curr->item.value = element.value;
-			// printf("value update\n");
-			return;
-		}
+		// case where it's equal
 		if (value == curr->item.value) {
-			// printf("reeet\n");
+			// printf("equal\n");
 			temp = curr->prev;
 			curr->prev = new;
 			new->next = curr;
@@ -96,7 +100,8 @@ void addPQ(PQ pq, ItemPQ element) {
 			pq->nitems += 1;
 			return;
 		}
-		if (value > curr->item.value) {
+		// case where it's larger
+		if (value > curr->item.value && value < curr->next->item.value) {
 			// printf("lol");
 			temp = curr->next;
 			curr->next = new;
@@ -112,13 +117,19 @@ void addPQ(PQ pq, ItemPQ element) {
 }
 
 ItemPQ dequeuePQ(PQ pq) {
+	if (pq->head == NULL) {
+		ItemPQ item = {0};
+		return item;
+	}
 	ItemPQ throwAway = pq->head->item;
 	DListNode temp = pq->head;
 	// printf("pointer of temp: %p\n", temp);
 	// printf("key of temp: %d\n", temp->item.key);
-	pq->head = pq->head->next;
 	// printf("pointer of head->next: %p\n", pq->head);
-	if (pq->head != NULL) pq->head->prev = NULL;
+	pq->head = pq->head->next;
+	if (pq->head != NULL) {
+		pq->head->prev = NULL;
+	}
 	free(temp);
 	pq->nitems -= 1; 
 	return throwAway;
@@ -147,6 +158,9 @@ void updatePQ(PQ pq, ItemPQ element) {
 	while(curr != NULL) {
 		if (curr->item.key == element.key) {
 			curr->item.value = element.value;
+			if (pq->nitems == 1) {
+				return;
+			}
 			ItemPQ temp = popNode(curr, pq);
 			// printf("%d", temp.key);
 			addPQ(pq, temp);
