@@ -21,7 +21,9 @@ struct PQRep {
 	DListNode end;
 };
 
+// makes new node
 static DListNode newNode (ItemPQ element);
+// pops the given node from the PQ
 static ItemPQ popNode(DListNode node, PQ pq);
 
 PQ newPQ() {
@@ -54,6 +56,7 @@ void addPQ(PQ pq, ItemPQ element) {
 	while (curr != NULL) {
 		if (curr->item.key == element.key) {
 			updatePQ(pq, element);
+			free(new);
 			return;
 		}
 		curr = curr->next;
@@ -64,7 +67,6 @@ void addPQ(PQ pq, ItemPQ element) {
 		pq->head = new;
 		pq->end = new;
 		pq->nitems += 1;
-		// printf("first element inserted\n");
 		return;
 	}
 	// check case if element has lower value than head 
@@ -73,7 +75,6 @@ void addPQ(PQ pq, ItemPQ element) {
 		new->next = pq->head;
 		pq->head = new;
 		pq->nitems += 1;
-		// printf("lower than head\n");
 		return;
 	}
 
@@ -83,7 +84,6 @@ void addPQ(PQ pq, ItemPQ element) {
 		new->prev = pq->end;
 		pq->end = new;
 		pq->nitems += 1;
-		// printf("larger than end\n");
 		return;
 	}
 	curr = pq->head;
@@ -91,7 +91,6 @@ void addPQ(PQ pq, ItemPQ element) {
 	while(curr != NULL) {
 		// case where it's equal
 		if (value == curr->item.value) {
-			// printf("equal\n");
 			temp = curr->prev;
 			curr->prev = new;
 			new->next = curr;
@@ -102,7 +101,6 @@ void addPQ(PQ pq, ItemPQ element) {
 		}
 		// case where it's larger
 		if (value > curr->item.value && value < curr->next->item.value) {
-			// printf("lol");
 			temp = curr->next;
 			curr->next = new;
 			new->prev = curr;
@@ -111,21 +109,14 @@ void addPQ(PQ pq, ItemPQ element) {
 			pq->nitems += 1;
 			return;
 		}
-
 		curr = curr->next;
 	}
 }
 
 ItemPQ dequeuePQ(PQ pq) {
-	if (pq->head == NULL) {
-		ItemPQ item = {0};
-		return item;
-	}
+	assert(!PQEmpty(pq));
 	ItemPQ throwAway = pq->head->item;
 	DListNode temp = pq->head;
-	// printf("pointer of temp: %p\n", temp);
-	// printf("key of temp: %d\n", temp->item.key);
-	// printf("pointer of head->next: %p\n", pq->head);
 	pq->head = pq->head->next;
 	if (pq->head != NULL) {
 		pq->head->prev = NULL;
@@ -136,7 +127,6 @@ ItemPQ dequeuePQ(PQ pq) {
 }
 
 static ItemPQ popNode(DListNode node, PQ pq) {
-	// printf("popping node\n");
 	ItemPQ temp = node->item;
 	if (node == pq->head) {
 		pq->head = node->next;
@@ -162,7 +152,6 @@ void updatePQ(PQ pq, ItemPQ element) {
 				return;
 			}
 			ItemPQ temp = popNode(curr, pq);
-			// printf("%d", temp.key);
 			addPQ(pq, temp);
 			break;
 		}

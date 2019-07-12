@@ -33,47 +33,25 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
 		// pop edge from queue
 		ItemPQ popEdge = dequeuePQ(pq);
 		AdjList out = outIncident(g, popEdge.key);
-
-		// printf("popped edge: %d\n", popEdge.key);
-
 		// for each edge going out from popped edge
 		while (out != NULL) {
-
-			// printf("out pointer: %p\t", out);
-			// printf("out w: %d\t", out->w);
-			// printf("out weight: %d\t distance from out: %d\n", out->weight, paths.dist[out->w]);
-			
 			// if distance not updated yet, set distance as 
 			// distance from source to vertex and predecessor as 
 			// source. Then add edge to pq 
 			if (paths.dist[out->w] == INF || paths.dist[out->w] > out->weight + paths.dist[popEdge.key]) {
 				paths.dist[out->w] = out->weight + paths.dist[popEdge.key];
-				// printf("new dist %d\n", paths.dist[out->w]);
 				if (paths.pred[out->w] == NULL) {
-					if (out->w == 11) {
-						// printf("adding new predecessors %d\n", popEdge.key);
-						// printf("distance from src to 11 is: %d\n", paths.dist[11]);
-					}
 					paths.pred[out->w] = makeNode(popEdge.key);
 				} else {
-					// printf("updating predecessors from %d to %d\n", paths.pred[out->w]->v, popEdge.key);
-					// printf("distance from src to 11 is: %d\n", paths.dist[11]);
 					freeList(paths.pred[out->w]);
 					paths.pred[out->w] = makeNode(popEdge.key);
 				}
 				ItemPQ temp;
 				temp.key = out->w;
 				temp.value = paths.dist[out->w];
-				// printf("adding temp key: %d \t temp value: %d\n", temp.key, temp.value);
 				addPQ(pq, temp);
-				// showPQ(pq);
 			} else if (paths.dist[out->w] == out->weight + paths.dist[popEdge.key] && popEdge.key != paths.pred[out->w]->v) {
 				int seen = 0;
-				if (out->w == 11) {
-					// printf("paths.dist[out-w]: %d\t out->weight: %d\t paths.dist[popEdge.key]: %d\n", paths.dist[out->w], out->weight, paths.dist[popEdge.key]);
-					// printf("equal distance, adding in %d\n", popEdge.key);
-
-				}
 				PredNode *curr = paths.pred[out->w];
 				while(curr != NULL) {
 					if (curr->v == popEdge.key) seen = 1;
@@ -117,11 +95,26 @@ ItemPQ newItem(int key, int value) {
 	return item;
 }
 void showShortestPaths(ShortestPaths paths) {
-
+	printf("src is: %d\t numNodes: %d\n", paths.src, paths.noNodes);
+	printf("distances: \n");
+	for (int i = 0; i < paths.noNodes; i++) {
+		printf("[%d]: %d\n", i, paths.dist[i]);
+	}
+	printf("preds: \n");
+	for (int j = 0; j < paths.noNodes; j++) {
+		printf("[%d]: ", j);
+		PredNode *curr = paths.pred[j];
+		while (curr != NULL) {
+			printf("%d -> ", curr->v);
+			curr = curr->next;
+		} 
+		printf("NULL\n");
+	}
 }
 
 
 void  freeShortestPaths(ShortestPaths paths) {
 	free(paths.dist);
 	for (int i = 0; i < paths.noNodes; i++) freeList(paths.pred[i]);
+	free(paths.pred);
 }

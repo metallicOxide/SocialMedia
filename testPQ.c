@@ -82,7 +82,14 @@ int main(){
   printf("state after adding {4,2}\n");
   showPQ(pq);
 
-  for(int i=0; i<6; i++){  
+  printf("addPQ: {7, -100}\n"); 
+  addPQ(pq, newItemPQ(7,-100));
+
+  printf("state after adding {4,2}\n");
+  showPQ(pq);
+
+
+  for(int i=0; i<5; i++){  
       v = dequeuePQ(pq);
       printf("Dequeued: {%d,%d}\n",v.key,v.value);
   }  

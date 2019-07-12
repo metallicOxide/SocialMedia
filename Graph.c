@@ -72,12 +72,10 @@ void removeEdge(Graph g, Vertex src, Vertex dest) {
         // node being deleted is first node
         if (curr->w == dest && prev == NULL) {
             g->nodesOut[src] = curr->next;
-            // printf("%d\n", curr->w);
             free(curr);
             break;
         } else if (curr->w == dest) {
             // delete no first node
-            // printf("%d\n",curr->w);
             prev->next = curr->next;
             free(curr);
             break;
@@ -136,8 +134,16 @@ AdjList inIncident(Graph g, Vertex v) {
 }
 
 void  showGraph(Graph g) {
-
-
+    printf("Number of Vertex: %d\t Number of Edges: %d\n", g->nV, g->nE);
+    for (int i = 0; i < g->nV; i++) {
+        printf("[%d]: ", i);
+        adjListNode *curr = g->nodesOut[i];
+        while (curr != NULL) {
+            printf("{to %d: dist: %d} -> ", curr->w, curr->weight);
+            curr = curr->next;
+        }
+        printf("\n");
+    }
 }
 
 // helper function to free adjLists for a given node

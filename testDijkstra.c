@@ -87,4 +87,5 @@ int main(int argc, char* argv[]){
     displayShortestPathsStruct(paths);
     freeShortestPaths(paths);
   }
+  freeGraph(g);
 }
